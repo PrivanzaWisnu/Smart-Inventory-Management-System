@@ -1,153 +1,228 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('laporan.title') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $title ?? 'Laporan Inventaris' }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        .card-hover {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
 
-                {{-- Card 1: Laporan Stok Barang --}}
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
-                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                </svg>
-                            </div>
-                            <h3 class="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                {{ __('laporan.stok_barang') }}
-                            </h3>
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .btn-loading .loading {
+            display: inline-block;
+        }
+
+        .btn-loading .text {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-10">
+            <h1 class="text-3xl font-bold text-gray-900">{{ $title ?? 'Pusat Laporan & Ekspor Data' }}</h1>
+            <p class="text-gray-600 mt-2">Akses dan unduh laporan inventaris lengkap untuk analisis bisnis yang lebih baik</p>
+        </header>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Stok Barang Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 card-hover overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-start mb-5">
+                        <div class="p-3 bg-blue-50 rounded-lg text-blue-600 mr-4">
+                            <i class="fas fa-boxes text-xl"></i>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                            {{ __('laporan.stok_barang_desc') }}
-                        </p>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Stok Barang</h3>
+                            <p class="text-sm font-medium text-blue-600">Inventory Report</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+                        Cetak daftar lengkap seluruh barang di gudang, termasuk detail status stok yang menipis atau aman.
+                    </p>
 
-                        <form action="{{ route('laporan.stok.pdf') }}" method="GET">
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('laporan.filter_kategori') }}
-                                    </label>
-                                    <select name="kategori_id" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
-                                        <option value="">{{ __('laporan.semua_kategori') }}</option>
-                                        @foreach(\App\Models\Kategori::all() as $kat)
-                                            <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="stok_menipis" value="1" id="stok_menipis" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                                    <label for="stok_menipis" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                                        {{ __('laporan.hanya_stok_menipis') }}
-                                    </label>
+                    <form action="{{ route('laporan.stok.pdf') }}" method="GET" target="_blank" class="space-y-4">
+                        <div>
+                            <label for="stok_menipis" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-filter mr-1 text-blue-500"></i> Filter Data
+                            </label>
+                            <div class="relative">
+                                <select name="stok_menipis" id="stok_menipis"
+                                    class="w-full pl-4 pr-10 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors">
+                                    <option value="0">📄 Semua Data Barang</option>
+                                    <option value="1">⚠️ Hanya Stok Menipis</option>
+                                    <option value="2">✅ Hanya Stok Aman</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
                                 </div>
                             </div>
-                            <button type="submit" class="mt-4 w-full inline-flex justify-center items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 transition">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                {{ __('laporan.download_pdf') }}
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit"
+                                class="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <i class="fas fa-file-pdf mr-1"></i> Download PDF Stok
                             </button>
-                        </form>
-                    </div>
-                </div>
-
-                {{-- Card 2: Laporan Transaksi --}}
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                                <svg class="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                                </svg>
-                            </div>
-                            <h3 class="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                {{ __('laporan.transaksi') }}
-                            </h3>
+                            <p class="text-xs text-gray-500 mt-2 text-center">File akan diunduh dalam format PDF</p>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                            {{ __('laporan.transaksi_desc') }}
-                        </p>
-
-                        <form action="{{ route('laporan.transaksi.pdf') }}" method="GET">
-                            <div class="space-y-3">
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            {{ __('laporan.dari_tanggal') }}
-                                        </label>
-                                        <input type="date" name="tanggal_mulai" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            {{ __('laporan.sampai_tanggal') }}
-                                        </label>
-                                        <input type="date" name="tanggal_akhir" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        {{ __('laporan.tipe_transaksi') }}
-                                    </label>
-                                    <select name="tipe" class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
-                                        <option value="">{{ __('laporan.semua') }}</option>
-                                        <option value="masuk">{{ __('laporan.barang_masuk') }}</option>
-                                        <option value="keluar">{{ __('laporan.barang_keluar') }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <button type="submit" class="mt-4 w-full inline-flex justify-center items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 transition">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                {{ __('laporan.download_pdf') }}
-                            </button>
-                        </form>
-                    </div>
+                    </form>
                 </div>
-
-                {{-- Card 3: Laporan Ringkasan --}}
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
-                                <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-                            </div>
-                            <h3 class="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                {{ __('laporan.ringkasan_inventaris') }}
-                            </h3>
-                        </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                            {{ __('laporan.ringkasan_desc') }}
-                        </p>
-
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
-                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('laporan.ringkasan_isi') }}:</p>
-                            <ul class="text-xs text-gray-600 dark:text-gray-300 mt-2 space-y-1">
-                                <li>• {{ __('laporan.statistik_umum') }}</li>
-                                <li>• {{ __('laporan.daftar_stok_menipis') }}</li>
-                                <li>• {{ __('laporan.transaksi_terakhir') }}</li>
-                            </ul>
-                        </div>
-
-                        <a href="{{ route('laporan.ringkasan.pdf') }}" class="w-full inline-flex justify-center items-center px-4 py-2 bg-purple-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-purple-500 transition">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            {{ __('laporan.download_pdf') }}
-                        </a>
-                    </div>
-                </div>
-
             </div>
 
+            <!-- Riwayat Transaksi Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 card-hover overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-start mb-5">
+                        <div class="p-3 bg-green-50 rounded-lg text-green-600 mr-4">
+                            <i class="fas fa-exchange-alt text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Riwayat Transaksi</h3>
+                            <p class="text-sm font-medium text-green-600">Transaction History</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+                        Rekapitulasi lengkap arus barang masuk dan keluar berdasarkan rentang periode tanggal yang dipilih.
+                    </p>
+
+                    <form action="{{ route('laporan.transaksi.pdf') }}" method="GET" target="_blank" class="space-y-4">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <i class="far fa-calendar-alt mr-1 text-green-500"></i> Dari Tanggal
+                                </label>
+                                <input type="date" name="tanggal_mulai" id="tanggal_mulai"
+                                    class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                            </div>
+                            <div>
+                                <label for="tanggal_akhir" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <i class="far fa-calendar-check mr-1 text-green-500"></i> Sampai Tanggal
+                                </label>
+                                <input type="date" name="tanggal_akhir" id="tanggal_akhir"
+                                    class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit"
+                                class="w-full flex justify-center items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                <i class="fas fa-chart-line mr-1"></i> Download PDF Transaksi
+                            </button>
+                            <p class="text-xs text-gray-500 mt-2 text-center">File akan diunduh dalam format PDF</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Ringkasan Eksekutif Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 card-hover overflow-hidden flex flex-col">
+                <div class="p-6 flex-grow">
+                    <div class="flex items-start mb-5">
+                        <div class="p-3 bg-purple-50 rounded-lg text-purple-600 mr-4">
+                            <i class="fas fa-chart-pie text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Ringkasan Eksekutif</h3>
+                            <p class="text-sm font-medium text-purple-600">Executive Summary</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        Gambaran umum performa inventaris. Berisi total nilai aset, statistik kategori, dan ringkasan aktivitas terbaru dalam satu halaman.
+                    </p>
+
+                    <div class="mt-4 p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-medium text-purple-800 text-sm mb-2">Apa yang termasuk:</h4>
+                        <ul class="text-xs text-purple-700 space-y-1">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle mr-2 text-purple-500"></i> Total nilai inventaris
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle mr-2 text-purple-500"></i> Statistik kategori barang
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle mr-2 text-purple-500"></i> Aktivitas terbaru
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0">
+                    <a href="{{ route('laporan.ringkasan.pdf') }}" target="_blank"
+                        class="w-full flex justify-center items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                        <i class="fas fa-file-contract mr-1"></i> Download Ringkasan
+                    </a>
+                    <p class="text-xs text-gray-500 mt-2 text-center">File akan diunduh dalam format PDF</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informasi Tambahan -->
+        <div class="mt-10 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">Panduan Penggunaan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-info-circle text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900">Laporan Stok Barang</h3>
+                        <p class="text-sm text-gray-600 mt-1">Pilih filter untuk melihat semua barang atau hanya stok yang menipis</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-green-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-calendar-day text-green-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900">Rentang Tanggal</h3>
+                        <p class="text-sm text-gray-600 mt-1">Pastikan memilih rentang tanggal yang valid untuk laporan transaksi</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-purple-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-download text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900">Format File</h3>
+                        <p class="text-sm text-gray-600 mt-1">Semua laporan akan diunduh dalam format PDF yang siap cetak</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</x-app-layout>
+
+    <script>
+        // Set tanggal default untuk form transaksi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set tanggal mulai ke awal bulan ini
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('tanggal_mulai').valueAsDate = firstDay;
+            document.getElementById('tanggal_akhir').valueAsDate = today;
+        });
+    </script>
+</body>
+</html>

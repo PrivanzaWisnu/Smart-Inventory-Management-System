@@ -9,7 +9,7 @@ use App\Models\Transaksi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth; // Tambahkan ini biar Editor senang
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class LaporanController extends Controller
@@ -19,7 +19,9 @@ class LaporanController extends Controller
      */
     public function index(): View
     {
-        return view('laporan.index');
+        return view('laporan.index', [
+            'title' => 'Pusat Laporan & Ekspor Data'
+        ]);
     }
 
     /**
@@ -47,23 +49,27 @@ class LaporanController extends Controller
             'stok_menipis' => $barangs->filter(fn($b) => $b->stok <= $b->stok_minimum)->count(),
         ];
 
-        // PERBAIKAN: Ambil nama user di luar array agar tidak merah
         $namaUser = Auth::check() ? Auth::user()->name : 'Administrator';
 
+        // GUNAKAN STRING LANGSUNG DULU UNTUK TESTING
         $data = [
-            'title' => __('laporan.stok_barang'),
+            'title' => 'LAPORAN STOK BARANG',
             'date' => Carbon::now()->translatedFormat('d F Y, H:i'),
             'barangs' => $barangs,
             'summary' => $summary,
             'filter' => [
-                'kategori' => $request->kategori_id ? Kategori::find($request->kategori_id)?->nama_kategori : __('laporan.semua'),
-                'stok_menipis' => $request->stok_menipis == '1' ? __('laporan.ya') : __('laporan.tidak'),
+                'kategori' => $request->kategori_id ? (Kategori::find($request->kategori_id)?->nama_kategori ?? 'Semua') : 'Semua Kategori',
+                'stok_menipis' => $request->stok_menipis == '1' ? 'Ya' : 'Tidak',
             ],
             'printed_by' => $namaUser,
         ];
 
+        // Konfigurasi PDF
         $pdf = Pdf::loadView('laporan.stok-pdf', $data);
         $pdf->setPaper('A4', 'landscape');
+        $pdf->setOption('defaultFont', 'DejaVu Sans');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
 
         return $pdf->download('Laporan_Stok_' . Carbon::now()->format('Y-m-d_His') . '.pdf');
     }
@@ -101,25 +107,27 @@ class LaporanController extends Controller
             'nilai_keluar' => $transaksis->where('tipe_transaksi', 'keluar')->sum(fn($t) => $t->jumlah * $t->harga_per_unit),
         ];
 
-        // PERBAIKAN: Ambil nama user di luar array
         $namaUser = Auth::check() ? Auth::user()->name : 'Administrator';
 
+        // GUNAKAN STRING LANGSUNG DULU
         $data = [
-            'title' => __('laporan.transaksi'),
+            'title' => 'LAPORAN TRANSAKSI',
             'date' => Carbon::now()->translatedFormat('d F Y, H:i'),
             'transaksis' => $transaksis,
             'summary' => $summary,
             'filter' => [
                 'periode' => $request->filled('tanggal_mulai')
                     ? Carbon::parse($request->tanggal_mulai)->format('d/m/Y') . ' - ' . Carbon::parse($request->tanggal_akhir)->format('d/m/Y')
-                    : __('laporan.semua_periode'),
-                'tipe' => $request->tipe ?? __('laporan.semua'),
+                    : 'Semua Periode',
+                'tipe' => $request->tipe ?? 'Semua Tipe',
             ],
             'printed_by' => $namaUser,
         ];
 
         $pdf = Pdf::loadView('laporan.transaksi-pdf', $data);
         $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('defaultFont', 'DejaVu Sans');
+        $pdf->setOption('isHtml5ParserEnabled', true);
 
         return $pdf->download('Laporan_Transaksi_' . Carbon::now()->format('Y-m-d_His') . '.pdf');
     }
@@ -129,11 +137,11 @@ class LaporanController extends Controller
      */
     public function ringkasanPdf()
     {
-        // PERBAIKAN: Ambil nama user di luar array
         $namaUser = Auth::check() ? Auth::user()->name : 'Administrator';
 
+        // GUNAKAN STRING LANGSUNG DULU
         $data = [
-            'title' => __('laporan.ringkasan_inventaris'),
+            'title' => 'RINGKASAN INVENTARIS',
             'date' => Carbon::now()->translatedFormat('d F Y, H:i'),
             'stats' => [
                 'total_barang' => Barang::count(),
@@ -156,6 +164,8 @@ class LaporanController extends Controller
 
         $pdf = Pdf::loadView('laporan.ringkasan-pdf', $data);
         $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('defaultFont', 'DejaVu Sans');
+        $pdf->setOption('isHtml5ParserEnabled', true);
 
         return $pdf->download('Laporan_Ringkasan_' . Carbon::now()->format('Y-m-d_His') . '.pdf');
     }
