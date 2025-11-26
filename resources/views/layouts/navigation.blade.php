@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Menu Kategori (Untuk Admin & Staff) -->
+                    <x-nav-link :href="route('kategori.index')" :active="request()->routeIs('kategori.*')">
+                        {{ __('Kategori') }}
+                    </x-nav-link>
+
+                    <!-- User Management (Hanya untuk Admin) -->
+                    @if(Auth::user()->role === 'admin')
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            {{ __('User Management') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -70,6 +82,18 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <!-- Menu Kategori (Mobile) -->
+            <x-responsive-nav-link :href="route('kategori.index')" :active="request()->routeIs('kategori.*')">
+                {{ __('Kategori') }}
+            </x-responsive-nav-link>
+
+            <!-- User Management (Mobile - Hanya Admin) -->
+            @if(Auth::user()->role === 'admin')
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    {{ __('User Management') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
