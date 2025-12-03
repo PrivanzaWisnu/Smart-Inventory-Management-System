@@ -1,64 +1,262 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center">
-            <a href="{{ route('kategori.index') }}" class="text-gray-500 hover:text-gray-700 mr-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Tambah Kategori Baru') }}
+    <x-slot name="header">Tambah Kategori</x-slot>
+
+    <style>
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb-link {
+            color: var(--sf-text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-link:hover {
+            color: var(--sf-accent);
+        }
+
+        .breadcrumb-separator {
+            color: var(--sf-text-muted);
+        }
+
+        .breadcrumb-current {
+            color: var(--sf-text);
+            font-weight: 600;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: var(--sf-card);
+            border: 1px solid var(--sf-border);
+            border-radius: 16px;
+            max-width: 600px;
+        }
+
+        .form-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--sf-border);
+        }
+
+        .form-card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--sf-text);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-card-title-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--sf-accent-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sf-accent);
+        }
+
+        .form-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--sf-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label-optional {
+            font-weight: 400;
+            color: var(--sf-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--sf-primary);
+            border: 1px solid var(--sf-border);
+            border-radius: 10px;
+            color: var(--sf-text);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--sf-accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--sf-text-muted);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-error {
+            color: var(--sf-danger);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--sf-text-muted);
+            margin-top: 0.35rem;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--sf-border);
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: var(--sf-secondary);
+            border: 1px solid var(--sf-border);
+            color: var(--sf-text-muted);
+        }
+
+        .btn-secondary:hover {
+            background: var(--sf-border);
+            color: var(--sf-text);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--sf-accent) 0%, #60a5fa 100%);
+            border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{{ route('kategori.index') }}" class="breadcrumb-link">Kategori</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Tambah Baru</span>
+    </nav>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-card-header">
+            <h2 class="form-card-title">
+                <div class="form-card-title-icon">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                </div>
+                Tambah Kategori Baru
             </h2>
         </div>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    
-                    <form action="{{ route('kategori.store') }}" method="POST">
-                        @csrf
+        <div class="form-card-body">
+            <form action="{{ route('kategori.store') }}" method="POST">
+                @csrf
 
-                        {{-- Nama Kategori --}}
-                        <div class="mb-4">
-                            <x-input-label for="nama_kategori" :value="__('Nama Kategori')" />
-                            <x-text-input id="nama_kategori" 
-                                          name="nama_kategori" 
-                                          type="text" 
-                                          class="mt-1 block w-full" 
-                                          :value="old('nama_kategori')" 
-                                          required 
-                                          autofocus 
-                                          placeholder="Contoh: Elektronik, Alat Tulis, dll" />
-                            <x-input-error :messages="$errors->get('nama_kategori')" class="mt-2" />
-                        </div>
-
-                        {{-- Deskripsi --}}
-                        <div class="mb-6">
-                            <x-input-label for="deskripsi" :value="__('Deskripsi (Opsional)')" />
-                            <textarea id="deskripsi" 
-                                      name="deskripsi" 
-                                      rows="3"
-                                      class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
-                                      placeholder="Deskripsi singkat tentang kategori ini...">{{ old('deskripsi') }}</textarea>
-                            <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
-                        </div>
-
-                        {{-- Buttons --}}
-                        <div class="flex items-center justify-end space-x-3">
-                            <a href="{{ route('kategori.index') }}" 
-                               class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                                Batal
-                            </a>
-                            <x-primary-button>
-                                {{ __('Simpan Kategori') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
-
+                <div class="form-group">
+                    <label for="nama_kategori" class="form-label">Nama Kategori</label>
+                    <input
+                        type="text"
+                        id="nama_kategori"
+                        name="nama_kategori"
+                        class="form-input"
+                        value="{{ old('nama_kategori') }}"
+                        placeholder="Contoh: Elektronik, Alat Tulis, dll"
+                        required
+                        autofocus
+                    >
+                    @error('nama_kategori')
+                        <p class="form-error">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                    <p class="form-hint">Nama kategori harus unik dan tidak boleh duplikat.</p>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label for="deskripsi" class="form-label">
+                        Deskripsi <span class="form-label-optional">(Opsional)</span>
+                    </label>
+                    <textarea
+                        id="deskripsi"
+                        name="deskripsi"
+                        class="form-input form-textarea"
+                        placeholder="Deskripsi singkat tentang kategori ini..."
+                    >{{ old('deskripsi') }}</textarea>
+                    @error('deskripsi')
+                        <p class="form-error">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ route('kategori.index') }}" class="btn btn-secondary">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Batal
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Simpan Kategori
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

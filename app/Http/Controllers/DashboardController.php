@@ -6,45 +6,61 @@ use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Supplier;
 use App\Models\Transaksi;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Card Ringkasan Atas (Statistik Dasar)
+        // Data Statistik Utama
         $totalBarang = Barang::count();
         $totalKategori = Kategori::count();
         $totalSupplier = Supplier::count();
 
-        // 2. Card Peringatan (Stok Menipis)
-        // Logic: Cari barang yang stoknya <= stok_minimum
-        $barangMenipis = Barang::whereColumn('stok', '<=', 'stok_minimum')->get();
+        // Stok Management - SESUAI dengan field di model Barang
+        $barangMenipis = Barang::where('stok', '<', DB::raw('stok_minimum'))->get();
+        $barangHabis = Barang::where('stok', 0)->count();
 
-        // 3. Data untuk Grafik (Pie Chart)
-        // Logic: Hitung jumlah produk di setiap kategori
-        // Hasilnya dipisah jadi 2 array: Label (Nama Kategori) dan Values (Jumlahnya)
-        $kategoriData = Kategori::withCount('barangs')->get();
-        $chartLabels = $kategoriData->pluck('nama_kategori');
-        $chartValues = $kategoriData->pluck('barangs_count');
+        // Data Finansial
+        $totalNilaiAset = Barang::sum(DB::raw('stok * harga_beli'));
+        $potensiProfit = Barang::sum(DB::raw('stok * (harga_jual - harga_beli)'));
 
-        // 4. Riwayat Transaksi Terakhir (Tabel)
-        // Ambil 5 transaksi paling baru, beserta data barang dan user-nya
+        // Data untuk Charts - SESUAI dengan method barangs() di model Kategori
+        $chartData = Kategori::withCount('barangs')->get(); // PERBAIKAN: 'barangs' bukan 'barang'
+        $chartLabels = $chartData->pluck('nama_kategori');
+        $chartValues = $chartData->pluck('barangs_count'); // PERBAIKAN: 'barangs_count' bukan 'barang_count'
+
+        // Data Tambahan
         $transaksiTerbaru = Transaksi::with(['barang', 'user'])
-                            ->latest('tanggal_transaksi')
-                            ->take(5)
-                            ->get();
+            ->latest()
+            ->take(8)
+            ->get();
 
-        // Kirim semua variabel di atas ke View 'dashboard'
+        $stokTerbanyak = Barang::with('kategori')
+            ->orderBy('stok', 'desc')
+            ->take(5)
+            ->get();
+
+        $stokTerendah = Barang::with('kategori')
+            ->where('stok', '>', 0)
+            ->orderBy('stok', 'asc')
+            ->take(5)
+            ->get();
+
         return view('dashboard', compact(
             'totalBarang',
             'totalKategori',
             'totalSupplier',
             'barangMenipis',
+            'barangHabis',
+            'totalNilaiAset',
+            'potensiProfit',
             'chartLabels',
             'chartValues',
-            'transaksiTerbaru'
+            'transaksiTerbaru',
+            'stokTerbanyak',
+            'stokTerendah'
         ));
     }
 }

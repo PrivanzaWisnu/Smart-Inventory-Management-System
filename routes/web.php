@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KategoriController; // <-- Pastikan baris ini ada!
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LaporanController; // <--- WAJIB DITAMBAH!
+use App\Http\Controllers\UserController;    // <--- WAJIB DITAMBAH!
 use Illuminate\Support\Facades\Route;
 
 // 1. Redirect Halaman Awal ke Login
@@ -26,19 +28,17 @@ Route::middleware('auth')->group(function () {
     // --- Kategori ---
     Route::resource('kategori', KategoriController::class);
 
-    // --- LAPORAN & EXPORT PDF (Tambahkan Bagian Ini) ---
-    // Halaman Menu Laporan
+    // --- LAPORAN & EXPORT PDF ---
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-
-    // Action Download PDF (Nama route disamakan dengan yang ada di view kamu)
     Route::get('/laporan/stok-pdf', [LaporanController::class, 'stokPdf'])->name('laporan.stok.pdf');
     Route::get('/laporan/transaksi-pdf', [LaporanController::class, 'transaksiPdf'])->name('laporan.transaksi.pdf');
     Route::get('/laporan/ringkasan-pdf', [LaporanController::class, 'ringkasanPdf'])->name('laporan.ringkasan.pdf');
 });
 
 // Route User Management (Hanya admin yang boleh akses)
-Route::middleware(['auth', 'checkRole:admin'])->group(function () {
+// Pastikan middleware 'checkRole' atau 'role' sudah didaftarkan di bootstrap/app.php
+Route::middleware(['auth', 'role:admin'])->group(function () { // <-- Pastikan nama middleware sesuai ('role' atau 'checkRole')
     Route::resource('users', UserController::class);
-})
+}); // <--- JANGAN LUPA TITIK KOMA (;) DI SINI!
 
 require __DIR__.'/auth.php';
