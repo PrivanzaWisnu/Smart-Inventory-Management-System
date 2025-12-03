@@ -3,8 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\LaporanController; // <--- WAJIB DITAMBAH!
-use App\Http\Controllers\UserController;    // <--- WAJIB DITAMBAH!
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // 1. Redirect Halaman Awal ke Login
@@ -33,12 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/stok-pdf', [LaporanController::class, 'stokPdf'])->name('laporan.stok.pdf');
     Route::get('/laporan/transaksi-pdf', [LaporanController::class, 'transaksiPdf'])->name('laporan.transaksi.pdf');
     Route::get('/laporan/ringkasan-pdf', [LaporanController::class, 'ringkasanPdf'])->name('laporan.ringkasan.pdf');
-});
 
-// Route User Management (Hanya admin yang boleh akses)
-// Pastikan middleware 'checkRole' atau 'role' sudah didaftarkan di bootstrap/app.php
-Route::middleware(['auth', 'role:admin'])->group(function () { // <-- Pastikan nama middleware sesuai ('role' atau 'checkRole')
-    Route::resource('users', UserController::class);
-}); // <--- JANGAN LUPA TITIK KOMA (;) DI SINI!
+    // --- ADMIN ONLY: Kelola User ---
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('users', UserController::class)->except(['show']);
+    });
+});
 
 require __DIR__.'/auth.php';
