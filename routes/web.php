@@ -38,7 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('barang', BarangController::class)->except(['show']);
 
     // --- Transaksi ---
-    Route::resource('transaksi', TransaksiController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('transaksi', TransaksiController::class)
+        ->only(['index', 'create', 'store', 'show']);
 
     // --- LAPORAN & EXPORT PDF ---
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
@@ -52,4 +53,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
