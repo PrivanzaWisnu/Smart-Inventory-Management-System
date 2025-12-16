@@ -28,7 +28,8 @@ class TransaksiController extends Controller
             'barang_id' => 'required|exists:barangs,id',
             'tipe' => 'required|in:masuk,keluar',
             'jumlah' => 'required|integer|min:1',
-            'keterangan' => 'nullable|string|max:500',
+            'tanggal_transaksi' => 'required|date',
+            'catatan' => 'nullable|string|max:500',
         ], [
             'barang_id.required' => 'Barang wajib dipilih.',
             'barang_id.exists' => 'Barang tidak valid.',
@@ -61,7 +62,9 @@ class TransaksiController extends Controller
                 'user_id' => Auth::id(),
                 'tipe' => $validated['tipe'],
                 'jumlah' => $validated['jumlah'],
-                'keterangan' => $validated['keterangan'],
+                'harga_per_unit'    => $barang->harga_jual,
+                'tanggal_transaksi' => $validated['tanggal_transaksi'],
+                'catatan' => $validated['catatan'],
             ]);
         });
 

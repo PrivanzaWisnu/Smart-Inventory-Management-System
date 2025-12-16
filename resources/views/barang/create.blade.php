@@ -204,10 +204,10 @@
 
                     <div class="form-row cols-2">
                         <div class="form-group">
-                            <label for="kode_barang" class="form-label">Kode Barang <span class="form-label-optional">(Auto)</span></label>
-                            <input type="text" id="kode_barang" name="kode_barang" class="form-input" value="{{ old('kode_barang', $kodeBarang ?? '') }}" placeholder="BRG-00001" readonly>
+                            <label for="sku" class="form-label">Kode Barang <span class="form-label-optional">(Auto)</span></label>
+                            <input type="text" id="sku" name="sku" class="form-input" value="{{ old('sku') ?? ($kodeBarang ?? '') }}" placeholder="BRG-00001" readonly style="user-select: none;">
                             <p class="form-hint">Kode akan di-generate otomatis jika dikosongkan</p>
-                            @error('kode_barang')
+                            @error('sku')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>

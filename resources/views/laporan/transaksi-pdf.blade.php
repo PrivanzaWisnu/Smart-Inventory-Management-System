@@ -263,11 +263,11 @@
         </thead>
         <tbody>
             @forelse($transaksis as $index => $trx)
-            <tr class="{{ $trx->tipe_transaksi === 'masuk' ? 'masuk-row' : 'keluar-row' }}">
+            <tr class="{{ $trx->tipe === 'masuk' ? 'masuk-row' : 'keluar-row' }}">
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ $trx->tanggal_transaksi->format('d/m/Y') }}</td>
                 <td class="text-center">
-                    @if($trx->tipe_transaksi === 'masuk')
+                    @if($trx->tipe === 'masuk')
                         <span class="badge badge-in">Masuk</span>
                     @else
                         <span class="badge badge-out">Keluar</span>

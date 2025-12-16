@@ -382,7 +382,7 @@
             <tr>
                 <td>{{ $trx->tanggal_transaksi->format('d/m/y H:i') }}</td>
                 <td class="text-center">
-                    @if($trx->tipe_transaksi == 'masuk')
+                    @if($trx->tipe == 'masuk')
                         <span class="badge bg-green">MASUK</span>
                     @else
                         <span class="badge bg-red">KELUAR</span>

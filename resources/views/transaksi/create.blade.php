@@ -265,7 +265,7 @@
                             </label>
                         </div>
                         <div class="tipe-option keluar">
-                            <input type="radio" name="tipe" id="tipe_keluar" value="keluar" {{ old('tipe') == 'keluar' ? 'checked' : '' }}>
+                            <input type="radio" name="tipe" id="tipe_keluar" value="keluar" {{ old('tipe') == 'keluar' ? 'checked' : '' }} required>
                             <label for="tipe_keluar">
                                 <div class="tipe-icon">
                                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,7 +290,7 @@
                             <option value="{{ $barang->id }}"
                                     data-stok="{{ $barang->stok }}"
                                     data-satuan="{{ $barang->satuan }}"
-                                    data-harga="{{ $barang->harga }}"
+                                    data-harga="{{ $barang->harga_jual }}"
                                     {{ old('barang_id') == $barang->id ? 'selected' : '' }}>
                                 {{ $barang->nama_barang }} (Stok: {{ $barang->stok }} {{ $barang->satuan }})
                             </option>
@@ -324,9 +324,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="keterangan" class="form-label">Keterangan <span class="form-label-optional">(Opsional)</span></label>
-                    <textarea id="keterangan" name="keterangan" class="form-textarea" placeholder="Contoh: Pembelian dari supplier X">{{ old('keterangan') }}</textarea>
-                    @error('keterangan')
+                    <label for="catatan" class="form-label">Catatan <span class="form-label-optional">(Opsional)</span></label>
+                    <textarea id="catatan" name="catatan" class="form-textarea" placeholder="Contoh: Pembelian dari supplier X">{{ old('catatan') }}</textarea>
+                    @error('catatan')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
+                    <input type="date"
+                        id="tanggal_transaksi"
+                        name="tanggal_transaksi"
+                        class="form-input"
+                        value="{{ old('tanggal_transaksi', date('Y-m-d')) }}"
+                        required>
+                    @error('tanggal_transaksi')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
