@@ -231,7 +231,7 @@
                         <th>Tipe</th>
                         <th>Jumlah</th>
                         <th>Oleh</th>
-                        <th>Keterangan</th>
+                        <th>Catatan</th>
                     </tr>
                 </thead>
                 <tbody>

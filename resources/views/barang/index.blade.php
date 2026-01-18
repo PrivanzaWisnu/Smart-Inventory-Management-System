@@ -472,7 +472,7 @@
                                     </div>
                                     <div>
                                         <div class="product-info-name">{{ $barang->nama_barang }}</div>
-                                        <div class="product-info-code">{{ $barang->kode_barang ?? '-' }}</div>
+                                        <div class="product-info-code">{{ $barang->sku ?? '-' }}</div>
                                     </div>
                                 </div>
                             </td>

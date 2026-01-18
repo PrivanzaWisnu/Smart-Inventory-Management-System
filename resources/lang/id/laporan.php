@@ -23,7 +23,7 @@ return [
     'nilai_beli' => 'Nilai Pembelian',
     'nilai_jual' => 'Nilai Penjualan',
     'stok_menipis' => 'Stok Menipis',
-    'nama_barang' => 'Nama Barang',
+    'nama_barang' => 'Nama Barang', 
     'supplier' => 'Supplier',
     'harga_beli' => 'Harga Beli',
     'harga_jual' => 'Harga Jual',

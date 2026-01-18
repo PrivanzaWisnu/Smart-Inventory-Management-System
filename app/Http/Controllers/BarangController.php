@@ -35,7 +35,7 @@ class BarangController extends Controller
                     break;
                 case 'menipis':
                     $query->where('stok', '>', 0)
-                          ->whereColumn('stok', '<=', 'stok_minimum');
+                        ->whereColumn('stok', '<=', 'stok_minimum');
                     break;
                 case 'aman':
                     $query->whereColumn('stok', '>', 'stok_minimum');
@@ -48,7 +48,7 @@ class BarangController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nama_barang', 'like', "%{$search}%")
-                  ->orWhere('kode_barang', 'like', "%{$search}%");
+                    ->orWhere('sku', 'like', "%{$search}%");
             });
         }
 
@@ -83,8 +83,8 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kode_barang' => 'nullable|string|max:50|unique:barangs,kode_barang',
             'nama_barang' => 'required|string|max:255',
+            'sku' => 'nullable|string|max:50|unique:barangs,sku',
             'kategori_id' => 'required|exists:kategoris,id',
             'supplier_id' => 'required|exists:suppliers,id',
             'harga_beli' => 'required|numeric|min:0',
@@ -111,14 +111,14 @@ class BarangController extends Controller
             'stok_minimum.required' => 'Stok minimum wajib diisi.',
             'stok_minimum.min' => 'Stok minimum tidak boleh negatif.',
             'satuan.required' => 'Satuan wajib diisi.',
-            'kode_barang.unique' => 'Kode barang sudah digunakan.',
+            'sku.unique' => 'Kode barang sudah digunakan.',
         ]);
 
         // Generate kode barang jika kosong
-        if (empty($validated['kode_barang'])) {
+        if (empty($validated['sku'])) {
             $lastBarang = Barang::latest('id')->first();
             $nextNumber = $lastBarang ? $lastBarang->id + 1 : 1;
-            $validated['kode_barang'] = 'BRG-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+            $validated['sku'] = 'BRG-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
         }
 
         Barang::create($validated);
@@ -156,12 +156,11 @@ class BarangController extends Controller
     public function update(Request $request, Barang $barang)
     {
         $validated = $request->validate([
-            'kode_barang' => 'nullable|string|max:50|unique:barangs,kode_barang,' . $barang->id,
+            // 'sku' => 'nullable|string|max:50|unique:barangs,sku' . $barang->id,
             'nama_barang' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategoris,id',
             'supplier_id' => 'required|exists:suppliers,id',
-            'harga_beli' => 'required|numeric|min:0',
-            'harga_jual' => 'required|numeric|min:0|gte:harga_beli',
+            'harga_jual' => 'required|numeric|min:0|gte:' . $barang->harga_beli,
             'stok' => 'required|integer|min:0',
             'stok_minimum' => 'required|integer|min:0',
             'satuan' => 'required|string|max:50',
@@ -173,15 +172,16 @@ class BarangController extends Controller
             'kategori_id.exists' => 'Kategori tidak valid.',
             'supplier_id.required' => 'Supplier wajib dipilih.',
             'supplier_id.exists' => 'Supplier tidak valid.',
-            'harga_beli.required' => 'Harga beli wajib diisi.',
             'harga_beli.min' => 'Harga beli tidak boleh negatif.',
             'harga_jual.required' => 'Harga jual wajib diisi.',
+            'harga_jual.min' => 'Harga jual tidak boleh negatif.',
             'harga_jual.gte' => 'Harga jual harus lebih besar atau sama dengan harga beli.',
             'stok.required' => 'Stok wajib diisi.',
             'stok_minimum.required' => 'Stok minimum wajib diisi.',
             'satuan.required' => 'Satuan wajib diisi.',
-            'kode_barang.unique' => 'Kode barang sudah digunakan.',
         ]);
+        $validated['sku'] = $barang->sku;
+        $validated['harga_beli'] = $barang->harga_beli;
 
         $barang->update($validated);
 

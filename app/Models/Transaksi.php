@@ -13,7 +13,7 @@ class Transaksi extends Model
     protected $fillable = [
         'user_id',
         'barang_id',
-        'tipe_transaksi',
+        'tipe',
         'jumlah',
         'harga_per_unit',
         'tanggal_transaksi',
@@ -29,18 +29,18 @@ class Transaksi extends Model
      * Boot method untuk Eloquent Events
      * Auto-update stok saat transaksi dibuat/dihapus
      */
-    protected static function booted()
-    {
-        // Saat transaksi DIBUAT -> update stok
-        static::created(function ($transaksi) {
-            $transaksi->updateStok('create');
-        });
+    // protected static function booted()
+    // {
+    //     // Saat transaksi DIBUAT -> update stok
+    //     static::created(function ($transaksi) {
+    //         $transaksi->updateStok('create');
+    //     });
 
-        // Saat transaksi DIHAPUS -> rollback stok
-        static::deleting(function ($transaksi) {
-            $transaksi->updateStok('delete');
-        });
-    }
+    //     // Saat transaksi DIHAPUS -> rollback stok
+    //     static::deleting(function ($transaksi) {
+    //         $transaksi->updateStok('delete');
+    //     });
+    // }
 
     /**
      * Logic untuk update stok barang
@@ -48,21 +48,21 @@ class Transaksi extends Model
     protected function updateStok(string $action): void
     {
         $barang = $this->barang;
-        
+
         if (!$barang) {
             return;
         }
 
         if ($action === 'create') {
             // Transaksi baru dibuat
-            if ($this->tipe_transaksi === 'masuk') {
+            if ($this->tipe === 'masuk') {
                 $barang->increment('stok', $this->jumlah);
             } else {
                 $barang->decrement('stok', $this->jumlah);
             }
         } elseif ($action === 'delete') {
             // Transaksi dihapus -> rollback
-            if ($this->tipe_transaksi === 'masuk') {
+            if ($this->tipe === 'masuk') {
                 $barang->decrement('stok', $this->jumlah);
             } else {
                 $barang->increment('stok', $this->jumlah);

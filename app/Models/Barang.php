@@ -19,6 +19,7 @@ class Barang extends Model
         'satuan',
         'stok',
         'stok_minimum',
+        'satuan',
     ];
 
     // Relasi: Barang milik satu Kategori

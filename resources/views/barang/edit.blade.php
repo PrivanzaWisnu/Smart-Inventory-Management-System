@@ -256,14 +256,6 @@
                             @enderror
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="deskripsi" class="form-label">Deskripsi <span class="form-label-optional">(Opsional)</span></label>
-                        <textarea id="deskripsi" name="deskripsi" class="form-textarea">{{ old('deskripsi', $barang->deskripsi) }}</textarea>
-                        @error('deskripsi')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
                 </div>
 
                 <div class="form-section">
@@ -271,12 +263,12 @@
 
                     <div class="form-row cols-2">
                         <div class="form-group">
-                            <label for="harga" class="form-label">Harga</label>
+                            <label for="harga_jual" class="form-label">Harga Jual</label>
                             <div class="input-group">
-                                <input type="number" id="harga" name="harga" class="form-input" value="{{ old('harga', $barang->harga) }}" min="0" required>
+                                <input type="number" id="harga_jual" name="harga_jual" class="form-input" value="{{ old('harga_jual', $barang->harga_jual) }}" min="0" required>
                                 <span class="input-group-addon">Rupiah</span>
                             </div>
-                            @error('harga')
+                            @error('harga_jual')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>
@@ -320,6 +312,14 @@
                         Update Barang
                     </button>
                 </div>
+            </form>
+            <form action="{{ route('barang.update', $barang) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <input type="hidden" name="sku" value="{{ $barang->sku }}">
+                <input type="hidden" name="harga_beli" value="{{ $barang->harga_beli }}">
+
             </form>
         </div>
     </div>

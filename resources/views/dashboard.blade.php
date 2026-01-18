@@ -296,7 +296,7 @@
             </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $totalBarang }}</div>
-                <div class="stat-label">Total Produk</div>
+                <div class="stat-label">{{('Total Produk')}}</div>
             </div>
         </div>
 
@@ -308,7 +308,7 @@
             </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $totalSupplier }}</div>
-                <div class="stat-label">Total Supplier</div>
+                <div class="stat-label">{{('Total Supplier')}}</div>
             </div>
         </div>
 
@@ -320,7 +320,7 @@
             </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $totalKategori }}</div>
-                <div class="stat-label">Kategori Aktif</div>
+                <div class="stat-label">{{('Total Kategori')}}</div>
             </div>
         </div>
 
@@ -332,7 +332,7 @@
             </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $barangMenipis->count() }}</div>
-                <div class="stat-label">Stok Menipis</div>
+                <div class="stat-label">{{('Stok Menipis')}}</div>
             </div>
         </div>
 
