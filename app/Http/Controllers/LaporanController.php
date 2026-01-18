@@ -101,10 +101,10 @@ class LaporanController extends Controller
 
         $summary = [
             'total_transaksi' => $transaksis->count(),
-            'total_masuk' => $transaksis->where('tipe_transaksi', 'masuk')->count(),
-            'total_keluar' => $transaksis->where('tipe_transaksi', 'keluar')->count(),
-            'nilai_masuk' => $transaksis->where('tipe_transaksi', 'masuk')->sum(fn($t) => $t->jumlah * $t->harga_per_unit),
-            'nilai_keluar' => $transaksis->where('tipe_transaksi', 'keluar')->sum(fn($t) => $t->jumlah * $t->harga_per_unit),
+            'total_masuk' => $transaksis->where('tipe', 'masuk')->count(),
+            'total_keluar' => $transaksis->where('tipe', 'keluar')->count(),
+            'nilai_masuk' => $transaksis->where('tipe', 'masuk')->sum(fn($t) => $t->jumlah * $t->harga_per_unit),
+            'nilai_keluar' => $transaksis->where('tipe', 'keluar')->sum(fn($t) => $t->jumlah * $t->harga_per_unit),
         ];
 
         $namaUser = Auth::check() ? Auth::user()->name : 'Administrator';
