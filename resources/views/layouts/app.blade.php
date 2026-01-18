@@ -119,31 +119,31 @@
         }
 
         .nav-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem; /* DIKECILKAN dari 1.5rem */
         }
 
         .nav-section-title {
-            font-size: 0.7rem;
+            font-size: 0.65rem; /* DIKECILKAN dari 0.7rem */
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: var(--sf-text-muted);
             padding: 0 0.75rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem; /* DIKECILKAN dari 0.5rem */
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            gap: 0.6rem; /* DIKECILKAN dari 0.75rem */
+            padding: 0.6rem 1rem; /* DIKECILKAN dari 0.75rem 1rem */
             color: var(--sf-text-muted);
             text-decoration: none;
             border-radius: 10px;
             margin-bottom: 0.25rem;
             transition: all 0.2s ease;
             font-weight: 500;
-            font-size: 0.925rem;
+            font-size: 0.875rem; /* DIKECILKAN dari 0.925rem */
         }
 
         .nav-item:hover {
@@ -157,17 +157,17 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        .nav-item-icon {
-            width: 20px;
-            height: 20px;
+        .nav-item-icon, .nav-icon {
+            width: 16px; /* DIKECILKAN dari 20px */
+            height: 16px; /* DIKECILKAN dari 20px */
             flex-shrink: 0;
         }
 
-        .nav-item-badge {
+        .nav-item-badge, .nav-badge {
             margin-left: auto;
-            font-size: 0.7rem;
+            font-size: 0.65rem; /* DIKECILKAN dari 0.7rem */
             font-weight: 700;
-            padding: 0.2rem 0.5rem;
+            padding: 0.15rem 0.4rem; /* DIKECILKAN dari 0.2rem 0.5rem */
             border-radius: 100px;
             background: var(--sf-danger);
             color: white;
@@ -411,12 +411,12 @@
         .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            gap: 0.6rem; /* DIKECILKAN dari 0.75rem */
+            padding: 0.6rem 1rem; /* DIKECILKAN dari 0.75rem 1rem */
             color: var(--sf-text-muted);
             text-decoration: none;
             border-radius: 8px;
-            font-size: 0.875rem;
+            font-size: 0.85rem; /* DIKECILKAN dari 0.875rem */
             transition: all 0.2s ease;
         }
 
@@ -445,12 +445,12 @@
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            gap: 0.6rem; /* DIKECILKAN dari 0.75rem */
+            padding: 0.6rem 1rem; /* DIKECILKAN dari 0.75rem 1rem */
             color: var(--sf-text-muted);
             text-decoration: none;
             border-radius: 8px;
-            font-size: 0.875rem;
+            font-size: 0.85rem; /* DIKECILKAN dari 0.875rem */
             transition: all 0.2s ease;
             background: none;
             border: none;
@@ -461,6 +461,19 @@
         .logout-btn:hover {
             background: var(--sf-danger-light);
             color: var(--sf-danger);
+        }
+
+        /* Ikon dropdown lebih kecil */
+        .dropdown-item svg {
+            width: 16px; /* DIKECILKAN dari 18px */
+            height: 16px; /* DIKECILKAN dari 18px */
+            flex-shrink: 0;
+        }
+
+        .logout-btn svg {
+            width: 16px; /* DIKECILKAN dari 18px */
+            height: 16px; /* DIKECILKAN dari 18px */
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -628,16 +641,23 @@
                         </button>
                         <div class="dropdown-menu" :class="{ 'active': open }" x-show="open" @click.away="open = false">
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
                                 Profil Saya
+                            </a>
+                            <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Pengaturan
                             </a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}" class="logout-form">
                                 @csrf
                                 <button type="submit" class="logout-btn">
-                                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                                     </svg>
                                     Keluar
